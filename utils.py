@@ -48,7 +48,7 @@ def get_datasets2():
 def metrics(target, pred):
     soft_pred = torch.softmax(pred.data, dim=1)[:, 1].cpu().numpy()
     pred = torch.argmax(pred.data, dim=1)
-    print(target.shape, pred.shape, soft_pred.shape)
+    # print(target.shape, pred.shape, soft_pred.shape)
     # print(target.float().mean())
     # acc = (pred == target).float().mean().cpu().item() # 样本不均衡 正样本数量为0.0979 不能用准确率作为依据
     target, pred = target.cpu().numpy(), pred.cpu().numpy()
