@@ -12,8 +12,10 @@ class AMNet(nn.Module):
                  hid_channels=156,
                  K=2,
                  filter_num=4,
-                 dropout=0.0):
+                 dropout=0.0,
+                 beta=0.5):
         super(AMNet, self).__init__()
+        self.beta = beta
         self.act_fn = nn.ReLU()
         self.attn_fn = nn.Tanh()
         self.linear_transform_in = nn.Sequential(
@@ -89,7 +91,7 @@ class AMNet(nn.Module):
             marginal_loss = bias
 
         if self.training:
-            return y_hat, marginal_loss
+            return y_hat, self.beta * marginal_loss
         else:
             return y_hat
 

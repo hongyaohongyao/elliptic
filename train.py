@@ -86,7 +86,7 @@ def train(model, data, train_idx, optimizer):
         out = out[train_idx]
     loss = F.cross_entropy(out, data.y[train_idx])
     if extra_loss is not None:
-        loss = loss + extra_loss * 0.5
+        loss = loss + extra_loss
     optimizer.zero_grad()
     loss.backward()
     optimizer.step()
