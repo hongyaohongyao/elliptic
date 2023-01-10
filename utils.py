@@ -35,9 +35,20 @@ def get_datasets():
     return data
 
 
+def get_datasets2():
+    # 论文里用到的数据集，和课程给的在划分上不一样
+    import pickle
+    data = pickle.load(open('data/elliptic.dat', 'rb'))
+    data.train_idx = torch.argwhere(data.train_mask).squeeze(1)
+    data.val_idx = torch.argwhere(data.val_mask).squeeze(1)
+    data.test_idx = torch.argwhere(data.test_mask).squeeze(1)
+    return data
+
+
 def metrics(target, pred):
     soft_pred = torch.softmax(pred.data, dim=1)[:, 1].cpu().numpy()
     pred = torch.argmax(pred.data, dim=1)
+    print(target.shape, pred.shape, soft_pred.shape)
     # print(target.float().mean())
     # acc = (pred == target).float().mean().cpu().item() # 样本不均衡 正样本数量为0.0979 不能用准确率作为依据
     target, pred = target.cpu().numpy(), pred.cpu().numpy()
@@ -49,5 +60,6 @@ def metrics(target, pred):
 
 
 if __name__ == '__main__':
-    data = get_datasets()
+    data = get_datasets2()
     print(data)
+    print()
