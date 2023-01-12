@@ -60,6 +60,6 @@ def metrics(target, pred):
 
 
 if __name__ == '__main__':
-    data = get_datasets2()
+    data = get_datasets()
     print(data)
     print()
