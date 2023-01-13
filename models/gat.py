@@ -8,7 +8,7 @@ class GAT(torch.nn.Module):
     def __init__(self,
                  in_feats,
                  out_feats,
-                 hidden_channels=128,
+                 hidden_channels=192,
                  dropout=0.0,
                  layer_heads=[2, 2, 1],
                  batchnorm=False):
@@ -66,5 +66,11 @@ def gat_bn_drop05(in_feats, out_feats, **kwargs):
 def gat_bn_drop10(in_feats, out_feats, **kwargs):
     return GAT(in_feats, out_feats, batchnorm=True, dropout=0.1, **kwargs)
 
+
 def gat_bn_drop30(in_feats, out_feats, **kwargs):
     return GAT(in_feats, out_feats, batchnorm=True, dropout=0.3, **kwargs)
+
+
+if __name__ == "__main__":
+    model = gat_bn_drop30(93, 2)  # 187782
+    print(sum(p.numel() for p in model.parameters()))

@@ -7,7 +7,7 @@ class MLP(torch.nn.Module):
     def __init__(self,
                  in_feats,
                  out_feats,
-                 hidden_channels=256,
+                 hidden_channels=384,
                  num_layers=3,
                  dropout=0.0,
                  batchnorm=False):
@@ -54,3 +54,7 @@ def mlp_bn_drop10(in_feats, out_feats, **kwargs):
 
 def mlp_bn_drop30(in_feats, out_feats, **kwargs):
     return MLP(in_feats, out_feats, batchnorm=True, dropout=0.3, **kwargs)
+
+if __name__ == "__main__":
+    model = mlp_bn_drop30(93, 2) # 110594
+    print(sum(p.numel() for p in model.parameters()))

@@ -1,7 +1,10 @@
 import torch
 import torch.nn.functional as F
 import torch.nn as nn
-from .bernconv import BernConv
+try:
+    from .bernconv import BernConv
+except ImportError:
+    from bernconv import BernConv
 
 
 class AMNet(nn.Module):
@@ -9,7 +12,7 @@ class AMNet(nn.Module):
     def __init__(self,
                  in_feats,
                  out_feats,
-                 hid_channels=156,
+                 hid_channels=232,
                  K=2,
                  filter_num=4,
                  dropout=0.0,
@@ -110,3 +113,8 @@ def amnet_drop10(in_feats, out_feats, **kwargs):
 
 def amnet_drop30(in_feats, out_feats, **kwargs):
     return AMNet(in_feats, out_feats, dropout=0.3, **kwargs)
+
+
+if __name__ == "__main__":
+    model = amnet_drop30(93, 2)  # 187782
+    print(sum(p.numel() for p in model.parameters()))

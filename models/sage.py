@@ -9,7 +9,7 @@ class SAGE(nn.Module):
     def __init__(self,
                  in_feats,
                  out_feats,
-                 hidden_channels=178,
+                 hidden_channels=256,
                  num_layers=3,
                  dropout=0.0,
                  batchnorm=False):
@@ -54,8 +54,15 @@ def sage_bn_drop05(in_feats, out_feats, **kwargs):
 def sage_bn_drop10(in_feats, out_feats, **kwargs):
     return SAGE(in_feats, out_feats, batchnorm=True, dropout=0.1, **kwargs)
 
+
 def sage_bn_drop30(in_feats, out_feats, **kwargs):
     return SAGE(in_feats, out_feats, batchnorm=True, dropout=0.3, **kwargs)
 
+
 def sage_bn_drop50(in_feats, out_feats, **kwargs):
     return SAGE(in_feats, out_feats, batchnorm=True, dropout=0.5, **kwargs)
+
+
+if __name__ == "__main__":
+    model = sage_bn_drop30(93, 2) # 181250
+    print(sum(p.numel() for p in model.parameters()))
