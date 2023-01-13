@@ -7,30 +7,38 @@ except ImportError:
     from bernconv import BernConv
 
 
-class AMNet(nn.Module):
+class AMNetIp(nn.Module):
 
     def __init__(self,
                  in_feats,
                  out_feats,
-                 hid_channels=228,
+                 hid_channels=226,
                  K=2,
                  filter_num=4,
                  dropout=0.0,
                  beta=0.5):
-        super(AMNet, self).__init__()
+        super(AMNetIp, self).__init__()
         self.beta = beta
         self.act_fn = nn.ReLU()
         self.attn_fn = nn.Tanh()
         self.linear_transform_in = nn.Sequential(
             nn.Linear(in_feats, hid_channels),
+            nn.BatchNorm1d(hid_channels),
             self.act_fn,
+            nn.Dropout(dropout),
             nn.Linear(hid_channels, hid_channels),
+            nn.BatchNorm1d(hid_channels),
+            self.act_fn,
+            nn.Dropout(dropout),
         )
+        self.dropout = dropout
         self.K = K
         self.filters = nn.ModuleList([
             BernConv(hid_channels, K, normalization=True, bias=True)
             for _ in range(filter_num)
         ])
+        self.bns = nn.ModuleList(
+            [nn.BatchNorm1d(hid_channels) for _ in range(filter_num)])
         self.filter_num = filter_num
         self.W_f = nn.Sequential(
             nn.Linear(hid_channels, hid_channels),
@@ -64,6 +72,7 @@ class AMNet(nn.Module):
         h_list = []
         for i, filter_ in enumerate(self.filters):
             h = filter_(x, edge_index)
+            h = self.bns[i](h)
             h_list.append(h)
 
         h_filters = torch.stack(h_list, dim=1)
@@ -99,22 +108,22 @@ class AMNet(nn.Module):
             return y_hat
 
 
-def amnet(in_feats, out_feats, **kwargs):
-    return AMNet(in_feats, out_feats, **kwargs)
+def amnet_ip(in_feats, out_feats, **kwargs):
+    return AMNetIp(in_feats, out_feats, **kwargs)
 
 
-def amnet_drop05(in_feats, out_feats, **kwargs):
-    return AMNet(in_feats, out_feats, dropout=0.05, **kwargs)
+def amnet_ip_drop05(in_feats, out_feats, **kwargs):
+    return AMNetIp(in_feats, out_feats, dropout=0.05, **kwargs)
 
 
-def amnet_drop10(in_feats, out_feats, **kwargs):
-    return AMNet(in_feats, out_feats, dropout=0.1, **kwargs)
+def amnet_ip_drop10(in_feats, out_feats, **kwargs):
+    return AMNetIp(in_feats, out_feats, dropout=0.1, **kwargs)
 
 
-def amnet_drop30(in_feats, out_feats, **kwargs):
-    return AMNet(in_feats, out_feats, dropout=0.3, **kwargs)
+def amnet_ip_drop30(in_feats, out_feats, **kwargs):
+    return AMNetIp(in_feats, out_feats, dropout=0.3, **kwargs)
 
 
 if __name__ == "__main__":
-    model = amnet_drop30(93, 2)  # 187782
+    model = amnet_ip_drop30(93, 2)  # 187782
     print(sum(p.numel() for p in model.parameters()))
