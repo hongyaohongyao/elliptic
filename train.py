@@ -17,18 +17,19 @@ from log import get_logger
 parser = argparse.ArgumentParser(description='Elliptic Training')
 parser.add_argument('--gpu', default="", type=str, help='GPU id to use.')
 parser.add_argument('-a', '--arch', default='gcn', help='model architecture')
-parser.add_argument('-s', '--suffix', default='', help='suffix')
+parser.add_argument('-s',
+                    '--suffix',
+                    default='',
+                    help='the suffix of save directory')
 parser.add_argument('-e',
                     '--epochs',
                     default=1000,
                     type=int,
-                    metavar='N',
                     help='number of total epochs to run')
 parser.add_argument('--lr',
                     '--learning-rate',
                     default=0.005,
                     type=float,
-                    metavar='LR',
                     help='initial learning rate',
                     dest='lr')
 parser.add_argument('--nc',
@@ -45,7 +46,7 @@ parser.add_argument('--wd',
 parser.add_argument('--seed',
                     default=0,
                     type=int,
-                    help='seed for initializing training. ')
+                    help='Seed for initializing training.')
 args = parser.parse_args()
 if args.gpu != "":
     os.environ['CUDA_VISIBLE_DEVICES'] = args.gpu
